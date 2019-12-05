@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+//Utrasonic Packege
+import edu.wpi.first.wpilibj.Ultrasonic;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -19,10 +22,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends IterativeRobot {
-  private static final String kDefaultAuto = "Default";
+  /*private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();*/
+
+  //Ultrasonic Objects
+  private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
 
   /**
    * This function is run when the robot is first started up and should be
@@ -30,9 +36,12 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    /*m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    SmartDashboard.putData("Auto choices", m_chooser);*/
+
+    GoalSensor.setAutomaticMode(true);
+
   }
 
   /**
@@ -60,10 +69,10 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    /*m_autoSelected = m_chooser.getSelected();
     // autoSelected = SmartDashboard.getString("Auto Selector",
     // defaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    System.out.println("Auto selected: " + m_autoSelected);*/
   }
 
   /**
@@ -71,7 +80,7 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
+    /*switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
         break;
@@ -79,7 +88,11 @@ public class Robot extends IterativeRobot {
       default:
         // Put default auto code here
         break;
-    }
+    }*/
+
+    //Ultrasonic (Auto)
+    double a_GoalSensorValue = GoalSensor.getRangeInches();
+
   }
 
   /**
@@ -87,6 +100,12 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void teleopPeriodic() {
+
+    //Ultrasonic (Teleop)
+    double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
+
+
+
   }
 
   /**
