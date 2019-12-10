@@ -7,10 +7,14 @@
 //shoelace
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.SolenoidBase;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -37,7 +41,7 @@ public class Robot extends IterativeRobot {
   private final DifferentialDrive r_Drive = new DifferentialDrive(new Spark (0), new Spark (1));
   //private final DifferentialDrive intake = new DifferentialDrive(new Spark(2), new Spark (3));
   //Spark(0) and Spark(1) are for driving
-  private final DifferentialDrive r_intake = new Spark(4);
+  private final Spark r_intake = new Spark(4);
   private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
 
   //Camera Setup
@@ -53,7 +57,7 @@ public class Robot extends IterativeRobot {
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);*/
+    SmartDashboard.putData("Auto choices", m_chooser);
 
     UsbCamera cam = CameraServer.getInstance().startAutomaticCapture();
 
@@ -87,10 +91,11 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-     autoSelected = SmartDashboard.getString("Auto Selector",
-     defaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);*/
+    // m_autoSelected = m_chooser.getSelected();
+    //  autoSelected = SmartDashboard.getString("Auto Selector",
+    //  defaultAuto);
+//     System.out.println("Auto selected: " + m_autoSelected);
+
   }
 
   /**
@@ -106,7 +111,7 @@ public class Robot extends IterativeRobot {
       default:
         // Put default auto code here
         break;
-    }*/
+    }
 
     //Ultrasonic (Auto)
     double a_GoalSensorValue = GoalSensor.getRangeInches();
@@ -123,20 +128,11 @@ public class Robot extends IterativeRobot {
     r_Drive.arcadeDrive (lYAxis, lXAxis);
     
     if(xbox.getBumper(Hand.kRight)){
-      r_intake.arcadeDrive(-0.5,0.0); //*Intake 
+      r_intake.set(-0.5); //*Intake 
+       //Ultrasonic (Teleop)
+      double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
     }
-  }
-      
-    
 
-
-    
-    //Ultrasonic (Teleop)
-    double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
-
-
-
-  }
   public double getspeedMod(XboxController xbox){
 
     boolean ybutton = xbox.getYButton();
@@ -160,9 +156,14 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void testPeriodic() {
-  
+    DoubleSolenoid exampleDouble = new DoubleSolenoid(1, 2);
+
+    exampleDouble.set(DoubleSolenoid.Value.kOff);
+    exampleDouble.set(DoubleSolenoid.Value.kForward);
+    exampleDouble.set(DoubleSolenoid.Value.kReverse);
   }
 
-
+  
 
 }
+
