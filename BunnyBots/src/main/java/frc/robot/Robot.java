@@ -94,7 +94,8 @@ public class Robot extends IterativeRobot {
     // m_autoSelected = m_chooser.getSelected();
     //  autoSelected = SmartDashboard.getString("Auto Selector",
     //  defaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+//     System.out.println("Auto selected: " + m_autoSelected);
+
   }
 
   /**
@@ -128,12 +129,9 @@ public class Robot extends IterativeRobot {
     
     if(xbox.getBumper(Hand.kRight)){
       r_intake.set(-0.5); //*Intake 
+       //Ultrasonic (Teleop)
+      double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
     }
-
-    //Ultrasonic (Teleop)
-    double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
-
-  }
 
   public double getspeedMod(XboxController xbox){
 
@@ -166,5 +164,6 @@ public class Robot extends IterativeRobot {
   }
 
   
+
 }
 
