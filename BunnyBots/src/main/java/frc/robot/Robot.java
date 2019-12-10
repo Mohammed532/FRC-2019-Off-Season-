@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+//shoelace
 package frc.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -15,6 +15,11 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Spark;
+
+//Camera Packages
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -35,6 +40,11 @@ public class Robot extends IterativeRobot {
   private final DifferentialDrive r_intake = new Spark(4);
   private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
 
+  //Camera Setup
+  final int IMG_HEIGHT = 340;
+  final int IMG_WIDTH = 340;
+
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -45,6 +55,9 @@ public class Robot extends IterativeRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);*/
 
+    UsbCamera cam = CameraServer.getInstance().startAutomaticCapture();
+
+    //Turns on Ultrasonic sensor    
     GoalSensor.setAutomaticMode(true);
 
   }
