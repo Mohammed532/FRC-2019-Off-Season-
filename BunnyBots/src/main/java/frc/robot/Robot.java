@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+//Timer Package
+import edu.wpi.first.wpilibj.Timer;
+
 //Utrasonic Packege
 import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -33,6 +36,9 @@ public class Robot extends IterativeRobot {
 
   //Ultrasonic Objects
   private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
+
+  //Timer Object(s)
+  private static Timer clockwork = new Timer();
 
   //Camera Setup
   final int IMG_HEIGHT = 340;
