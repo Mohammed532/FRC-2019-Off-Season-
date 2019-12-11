@@ -11,6 +11,10 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.Spark;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -18,13 +22,19 @@ import edu.wpi.first.wpilibj.XboxController;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends IterativeRobot {
+public class Robot extends IterativeRobot { 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private final XboxController xbox = new XboxController(1);
-  
+  double speedMod = 0.6;
+  private final DifferentialDrive r_Drive = new DifferentialDrive(new Spark (0), new Spark (1));
+  //private final DifferentialDrive intake = new DifferentialDrive(new Spark(2), new Spark (3));
+  //Spark(0) and Spark(1) are for driving
+  private final DifferentialDrive r_intake = new Spark(4);
+  private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -33,7 +43,10 @@ public class Robot extends IterativeRobot {
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    SmartDashboard.putData("Auto choices", m_chooser);*/
+
+    GoalSensor.setAutomaticMode(true);
+
   }
 
   /**
@@ -62,9 +75,9 @@ public class Robot extends IterativeRobot {
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
-    // autoSelected = SmartDashboard.getString("Auto Selector",
-    // defaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+     autoSelected = SmartDashboard.getString("Auto Selector",
+     defaultAuto);
+    System.out.println("Auto selected: " + m_autoSelected);*/
   }
 
   /**
@@ -80,7 +93,11 @@ public class Robot extends IterativeRobot {
       default:
         // Put default auto code here
         break;
-    }
+    }*/
+
+    //Ultrasonic (Auto)
+    double a_GoalSensorValue = GoalSensor.getRangeInches();
+
   }
 
   /**
@@ -88,14 +105,51 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void teleopPeriodic() {
-  double lXAxis = xbox.getRawAxis(0);
-  double lYAxis = xbox.getRawAxis(0);
+    double lXAxis = xbox.getRawAxis(0);
+    double lYAxis = xbox.getRawAxis(1);
+    r_Drive.arcadeDrive (lYAxis, lXAxis);
+    
+    if(xbox.getBumper(Hand.kRight)){
+      r_intake.arcadeDrive(-0.5,0.0); //*Intake 
+    }
   }
+      
+    
 
+
+    
+    //Ultrasonic (Teleop)
+    double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
+
+
+
+  }
+  public double getspeedMod(XboxController xbox){
+
+    boolean ybutton = xbox.getYButton();
+    boolean bbutton = xbox.getBButton();
+    boolean abutton = xbox.getAButton();
+    if(ybutton){
+    return 0.75;  
+    }
+    if(bbutton){
+    return 0.5;  
+    }
+    if(abutton){
+    return 0.25;  
+    }
+    double speedMod2 = speedMod;
+    return speedMod2;
+  }
+  
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
+  
   }
+
+
+
 }
