@@ -130,7 +130,6 @@ public class Robot extends IterativeRobot {
       r_Drive.arcadeDrive(0.5, 0);
 
     }else {
-
       r_Drive.arcadeDrive(0, 0); 
 
     }
