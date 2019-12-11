@@ -13,18 +13,10 @@ import edu.wpi.first.wpilibj.SolenoidBase;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-<<<<<<< HEAD
-
-//Timer Package
-import edu.wpi.first.wpilibj.Timer;
-
-//Utrasonic Packege
-=======
+import edu.wpi.first.wpilibj.Timer; //Timer Package
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Solenoid;
->>>>>>> master
-import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.Ultrasonic; //Utrasonic Packege
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Spark;
 
@@ -51,6 +43,7 @@ public class Robot extends IterativeRobot {
   //Spark(0) and Spark(1) are for driving
   private final Spark r_intake = new Spark(4);
   private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
+  private static final DoubleSolenoid catSol = new DoubleSolenoid(1, 2);
 
   //Timer Object(s)
   private static Timer clockwork = new Timer();
@@ -58,6 +51,9 @@ public class Robot extends IterativeRobot {
   //Camera Setup
   final int IMG_HEIGHT = 340;
   final int IMG_WIDTH = 340;
+
+  //Custom Objects
+  private final Catapult catapult = new Catapult(catSol);
 
 
   /**
@@ -155,15 +151,23 @@ public class Robot extends IterativeRobot {
     getspeedMod(xbox);
 
     if(xbox.getBumper(Hand.kRight)){
-      r_intake.set(-0.5); //Intake
+      r_intake.set(-0.5); //*Intake 
+       //Ultrasonic (Teleop) 
+      double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
     }
+    if(xbox.getTriggerAxis(Hand.kRight)>= 0.5){
+      catSol.set(DoubleSolenoid.Value.kForward); //Pushes piston forward with RT button
+    } 
+    if(xbox.getStartButton()){ 
+      catSol.set(DoubleSolenoid.Value.kReverse); //Emergency Button
+    } 
   }
-  public double getspeedMod(XboxController xbox){
 
+  public double getspeedMod(XboxController xbox){
     boolean ybutton = xbox.getYButton();
     boolean bbutton = xbox.getBButton();
     boolean abutton = xbox.getAButton();
-    
+
     if(ybutton){
       return 0.75;  
     }
@@ -182,11 +186,12 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void testPeriodic() {
-    DoubleSolenoid exampleDouble = new DoubleSolenoid(1, 2);
 
-    exampleDouble.set(DoubleSolenoid.Value.kOff);
-    exampleDouble.set(DoubleSolenoid.Value.kForward);
-    exampleDouble.set(DoubleSolenoid.Value.kReverse);
+    catSol.set(DoubleSolenoid.Value.kOff);
+
+    
+    catSol.set(DoubleSolenoid.Value.kForward);
+    catSol.set(DoubleSolenoid.Value.kReverse);
   }
 
   
