@@ -13,9 +13,17 @@ import edu.wpi.first.wpilibj.SolenoidBase;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+<<<<<<< HEAD
+
+//Timer Package
+import edu.wpi.first.wpilibj.Timer;
+
+//Utrasonic Packege
+=======
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Solenoid;
+>>>>>>> master
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Spark;
@@ -43,6 +51,9 @@ public class Robot extends IterativeRobot {
   //Spark(0) and Spark(1) are for driving
   private final Spark r_intake = new Spark(4);
   private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
+
+  //Timer Object(s)
+  private static Timer clockwork = new Timer();
 
   //Camera Setup
   final int IMG_HEIGHT = 340;
@@ -113,6 +124,16 @@ public class Robot extends IterativeRobot {
         break;
     }
 
+    //Robot needs to move 5 ft forward
+    if (clockwork.get() <= 5.0){
+
+      r_Drive.arcadeDrive(0.5, 0);
+
+    }else {
+      r_Drive.arcadeDrive(0, 0); 
+
+    }
+
     //Ultrasonic (Auto)
     double a_GoalSensorValue = GoalSensor.getRangeInches();
 
@@ -125,30 +146,35 @@ public class Robot extends IterativeRobot {
   public void teleopPeriodic() {
     double lXAxis = xbox.getRawAxis(0);
     double lYAxis = xbox.getRawAxis(1);
+    
+    //Ultrasonic (Teleop)
+    double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
+    
     r_Drive.arcadeDrive (lYAxis, lXAxis);
     
-    if(xbox.getBumper(Hand.kRight)){
-      r_intake.set(-0.5); //*Intake 
-       //Ultrasonic (Teleop)
-      double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
-    }
+    getspeedMod(xbox);
 
+    if(xbox.getBumper(Hand.kRight)){
+      r_intake.set(-0.5); //Intake
+    }
+  }
   public double getspeedMod(XboxController xbox){
 
     boolean ybutton = xbox.getYButton();
     boolean bbutton = xbox.getBButton();
     boolean abutton = xbox.getAButton();
+    
     if(ybutton){
-    return 0.75;  
+      return 0.75;  
     }
     if(bbutton){
-    return 0.5;  
+      return 0.5;  
     }
     if(abutton){
-    return 0.25;  
+      return 0.25;  
     }
     double speedMod2 = speedMod;
-    return speedMod2;
+      return speedMod2;
   }
   
   /**
