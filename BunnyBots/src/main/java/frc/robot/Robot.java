@@ -128,9 +128,15 @@ public class Robot extends IterativeRobot {
     
     if(xbox.getBumper(Hand.kRight)){
       r_intake.set(-0.5); //*Intake 
-       //Ultrasonic (Teleop)
+       //Ultrasonic (Teleop) 
       double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
     }
+    if(xbox.getTriggerAxis(Hand.kRight)>= 0.5){
+      exampleDouble.set(DoubleSolenoid.Value.kForward); //Pushes piston forward with RT button
+    } 
+    if(xbox.getStartButton()){ 
+      exampleDouble.set(DoubleSolenoid.Value.kReverse); //Emergency Button
+    } 
   }
 
   public double getspeedMod(XboxController xbox){
