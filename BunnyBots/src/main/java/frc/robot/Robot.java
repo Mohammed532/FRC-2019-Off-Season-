@@ -43,6 +43,7 @@ public class Robot extends IterativeRobot {
   //Spark(0) and Spark(1) are for driving
   private final Spark r_intake = new Spark(4);
   private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
+  private static final DoubleSolenoid catSol = new DoubleSolenoid(1, 2);
 
   //Timer Object(s)
   private static Timer clockwork = new Timer();
@@ -50,6 +51,9 @@ public class Robot extends IterativeRobot {
   //Camera Setup
   final int IMG_HEIGHT = 340;
   final int IMG_WIDTH = 340;
+
+  //Custom Objects
+  private final Catapult catapult = new Catapult(catSol);
 
 
   /**
@@ -152,10 +156,10 @@ public class Robot extends IterativeRobot {
       double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
     }
     if(xbox.getTriggerAxis(Hand.kRight)>= 0.5){
-      exampleDouble.set(DoubleSolenoid.Value.kForward); //Pushes piston forward with RT button
+      catSol.set(DoubleSolenoid.Value.kForward); //Pushes piston forward with RT button
     } 
     if(xbox.getStartButton()){ 
-      exampleDouble.set(DoubleSolenoid.Value.kReverse); //Emergency Button
+      catSol.set(DoubleSolenoid.Value.kReverse); //Emergency Button
     } 
   }
 
@@ -182,13 +186,12 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void testPeriodic() {
-    DoubleSolenoid exampleDouble = new DoubleSolenoid(1, 2);
 
-    exampleDouble.set(DoubleSolenoid.Value.kOff);
+    catSol.set(DoubleSolenoid.Value.kOff);
 
     
-    exampleDouble.set(DoubleSolenoid.Value.kForward);
-    exampleDouble.set(DoubleSolenoid.Value.kReverse);
+    catSol.set(DoubleSolenoid.Value.kForward);
+    catSol.set(DoubleSolenoid.Value.kReverse);
   }
 
   

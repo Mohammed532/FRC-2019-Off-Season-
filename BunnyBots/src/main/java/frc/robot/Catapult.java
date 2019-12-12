@@ -7,8 +7,17 @@
 
 package frc.robot;
 
-public class Catapult {
-        public Catapult(){
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
+public class Catapult {
+        private final DoubleSolenoid catSol;
+
+        public Catapult(DoubleSolenoid sol){
+                this.catSol = sol;
         }
+
+        public go(){
+                //catapult code goes here
+        }
+
 }
