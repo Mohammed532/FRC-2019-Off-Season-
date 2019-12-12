@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Spark;
@@ -132,20 +131,21 @@ public class Robot extends IterativeRobot {
        //Ultrasonic (Teleop)
       double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
     }
+  }
 
   public double getspeedMod(XboxController xbox){
-
     boolean ybutton = xbox.getYButton();
     boolean bbutton = xbox.getBButton();
     boolean abutton = xbox.getAButton();
+
     if(ybutton){
-    return 0.75;  
+      return 0.75;  
     }
     if(bbutton){
-    return 0.5;  
+      return 0.5;  
     }
     if(abutton){
-    return 0.25;  
+      return 0.25;  
     }
     double speedMod2 = speedMod;
     return speedMod2;
@@ -159,6 +159,8 @@ public class Robot extends IterativeRobot {
     DoubleSolenoid exampleDouble = new DoubleSolenoid(1, 2);
 
     exampleDouble.set(DoubleSolenoid.Value.kOff);
+
+    
     exampleDouble.set(DoubleSolenoid.Value.kForward);
     exampleDouble.set(DoubleSolenoid.Value.kReverse);
   }
