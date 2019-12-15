@@ -18,36 +18,37 @@
 /*                                                                                    ©  */
 /*---------------------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.autonomous;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+/**
+ * Class that holds all autonomous code
+ */
+
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-public class Catapult {
-        private final Timer catTimer = new Timer();
-        private final DoubleSolenoid catSol;
+public class Auto {
 
-        public Catapult(DoubleSolenoid sol){
-                this.catSol = sol;
-                catTimer.reset();
+        //Default auto code
+        public void aDefault(DifferentialDrive robotDrive, Timer timer){
+                aForward(robotDrive, timer);
         }
 
-        public void launch(){
-                catSol.set(DoubleSolenoid.Value.kForward);
-
-                if(catTimer.get() == 0.0){
-                        catTimer.start();
-                }else if(catTimer.get() >= 2.0){
-                        catSol.set(DoubleSolenoid.Value.kReverse);
-                        catTimer.stop();
-                        catTimer.reset();
+        //Auto code for just driving forward half speed for 5 sec
+        public void aForward(DifferentialDrive robotDrive, Timer timer){
+                //Robot needs to move 5 ft forward
+                if (timer.get() <= 5.0){
+                        robotDrive.arcadeDrive(0.5, 0);
+                }else {
+                        robotDrive.stopMotor(); 
                 }
         }
 
-        public void e_pull(){
-                catSol.set(DoubleSolenoid.Value.kReverse);
+        //Auto code for spinning slowly(used for showcases)
+        public void showcase(DifferentialDrive robotDrive, Timer timer){
+                robotDrive.arcadeDrive(0.0, 0.5);
         }
-
 }
 
 /*---------------------------------------------------------------------------------------*/                                                                            

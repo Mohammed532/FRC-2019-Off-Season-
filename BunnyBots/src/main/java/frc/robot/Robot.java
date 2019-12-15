@@ -1,11 +1,26 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-//shoelace
+/*---------------------------------------------------------------------------------------*/                                                                            
+/*            66666666       222222222222222         1111111       333333333333333       */
+/*           6::::::6       2:::::::::::::::22      1::::::1      3:::::::::::::::33     */
+/*          6::::::6        2::::::222222:::::2    1:::::::1      3::::::33333::::::3    */
+/*         6::::::6         2222222     2:::::2    111:::::1      3333333     3:::::3    */
+/*        6::::::6                      2:::::2       1::::1                  3:::::3    */
+/*       6::::::6                       2:::::2       1::::1                  3:::::3    */
+/*      6::::::6                     2222::::2        1::::1          33333333:::::3     */
+/*     6::::::::66666           22222::::::22         1::::l          3:::::::::::3      */
+/*    6::::::::::::::66       22::::::::222           1::::l          33333333:::::3     */
+/*    6::::::66666:::::6     2:::::22222              1::::l                  3:::::3    */
+/*    6:::::6     6:::::6   2:::::2                   1::::l                  3:::::3    */
+/*    6:::::6     6:::::6   2:::::2                   1::::l                  3:::::3    */
+/*    6::::::66666::::::6   2:::::2       222222   111::::::111   3333333     3:::::3    */
+/*     66:::::::::::::66    2::::::2222222:::::2   1::::::::::1   3::::::33333::::::3    */
+/*       66:::::::::66      2::::::::::::::::::2   1::::::::::1   3:::::::::::::::33     */
+/*         666666666        22222222222222222222   111111111111    333333333333333       */
+/*                                                                                    ©  */
+/*---------------------------------------------------------------------------------------*/
+
 package frc.robot;
+
+import frc.autonomous.Auto;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -24,36 +39,31 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
- */
+
 public class Robot extends IterativeRobot { 
   private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
+  private static final String showcaseAuto = "Showcase Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private final XboxController xbox = new XboxController(1);
-  double speedMod = 0.6;
+  private final XboxController xbox = new XboxController(0);
   private final DifferentialDrive r_Drive = new DifferentialDrive(new Spark (0), new Spark (1));
-  //private final DifferentialDrive intake = new DifferentialDrive(new Spark(2), new Spark (3));
   //Spark(0) and Spark(1) are for driving
-  private final Spark r_intake = new Spark(4);
-  private static Ultrasonic GoalSensor = new Ultrasonic(0, 1);
-  private static final DoubleSolenoid catSol = new DoubleSolenoid(1, 2);
-
+  private final DifferentialDrive intake = new DifferentialDrive(new Spark(2), new Spark (3));
+  private static Ultrasonic GoalSensor = new Ultrasonic(0, 1); //trig, echo
+  private static final DoubleSolenoid catSol = new DoubleSolenoid(0, 1);
+  double speedMod;
   //Timer Object(s)
   private static Timer clockwork = new Timer();
+
+  //Custom Objects
+  private final Catapult catapult = new Catapult(catSol);
+  private final Auto auto = new Auto();
 
   //Camera Setup
   final int IMG_HEIGHT = 340;
   final int IMG_WIDTH = 340;
 
-  //Custom Objects
-  private final Catapult catapult = new Catapult(catSol);
+  
 
 
   /**
@@ -63,7 +73,7 @@ public class Robot extends IterativeRobot {
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+    m_chooser.addOption("My Auto", showcaseAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
     UsbCamera cam = CameraServer.getInstance().startAutomaticCapture();
@@ -73,36 +83,16 @@ public class Robot extends IterativeRobot {
 
   }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
   @Override
   public void robotPeriodic() {
   }
 
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
-   */
   @Override
   public void autonomousInit() {
-    // m_autoSelected = m_chooser.getSelected();
-    //  autoSelected = SmartDashboard.getString("Auto Selector",
-    //  defaultAuto);
-//     System.out.println("Auto selected: " + m_autoSelected);
-
+    m_autoSelected = m_chooser.getSelected();
+    System.out.println("Auto selected: " + m_autoSelected);
+    clockwork.reset();
+    clockwork.start();
   }
 
   /**
@@ -111,74 +101,45 @@ public class Robot extends IterativeRobot {
   @Override
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
+      case showcaseAuto:
+        auto.showcase(r_Drive, clockwork);
         break;
       case kDefaultAuto:
       default:
-        // Put default auto code here
+        auto.aDefault(r_Drive, clockwork);
         break;
     }
 
-    //Robot needs to move 5 ft forward
-    if (clockwork.get() <= 5.0){
-
-      r_Drive.arcadeDrive(0.5, 0);
-
-    }else {
-      r_Drive.arcadeDrive(0, 0); 
-
-    }
-
-    //Ultrasonic (Auto)
-    double a_GoalSensorValue = GoalSensor.getRangeInches();
-
   }
 
-  /**
-   * This function is called periodically during operator control.
-   */
+  @Override
+  public void teleopInit(){
+    SmartDashboard.putNumber("Ultrasonic Distance Value", GoalSensor.getRangeInches());
+    SmartDashboard.putBoolean("Ultrasonic Status", GoalSensor.isEnabled());
+  }
+
   @Override
   public void teleopPeriodic() {
+    SmartDashboard.putNumber("Ultrasonic Distance Value", GoalSensor.getRangeInches());
+    speedMod = getspeedMod(xbox);
+
     double lXAxis = xbox.getRawAxis(0);
     double lYAxis = xbox.getRawAxis(1);
     
     //Ultrasonic (Teleop)
     double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
     
-    r_Drive.arcadeDrive (lYAxis, lXAxis);
-    
-    getspeedMod(xbox);
+    r_Drive.arcadeDrive(lYAxis * speedMod, lXAxis * speedMod); 
 
-    if(xbox.getBumper(Hand.kRight)){
-      r_intake.set(-0.5); //*Intake 
-       //Ultrasonic (Teleop) 
-      double t_GoalSensorValue = GoalSensor.getRangeInches(); //Checks how far sensor is from an object
-    }
-    if(xbox.getTriggerAxis(Hand.kRight)>= 0.5){
-      catSol.set(DoubleSolenoid.Value.kForward); //Pushes piston forward with RT button
+    r_intake();
+
+    if(xbox.getAButton()){
+      catapult.launch();
     } 
+
     if(xbox.getStartButton()){ 
-      catSol.set(DoubleSolenoid.Value.kReverse); //Emergency Button
+      catapult.e_pull(); //Emergency Button
     } 
-  }
-
-  public double getspeedMod(XboxController xbox){
-    boolean ybutton = xbox.getYButton();
-    boolean bbutton = xbox.getBButton();
-    boolean abutton = xbox.getAButton();
-
-    if(ybutton){
-      return 0.75;  
-    }
-    if(bbutton){
-      return 0.5;  
-    }
-    if(abutton){
-      return 0.25;  
-    }
-    double speedMod2 = speedMod;
-      return speedMod2;
   }
   
   /**
@@ -194,7 +155,55 @@ public class Robot extends IterativeRobot {
     catSol.set(DoubleSolenoid.Value.kReverse);
   }
 
+  //Changes the max speed of robot for optional controlling
+  public double getspeedMod(XboxController xbox){
+    speedMod = 0.6;
+    boolean ybutton = xbox.getYButton();
+    boolean bbutton = xbox.getBButton();
+    boolean xbutton = xbox.getXButton();
+
+    if(xbutton){
+      speedMod = 0.75;  
+    }
+    if(ybutton){
+      speedMod = 0.5;  
+    }
+    if(bbutton){
+      speedMod = 0.25;  
+    }
+    
+      return speedMod;
+  }
+
+  public void r_intake(){
+    if(xbox.getBumper(Hand.kRight)){
+      intake.arcadeDrive(-0.8, 0); //*Intake 
+    }
+    if(xbox.getBumper(Hand.kLeft)){
+      intake.stopMotor();
+    }
+  }
   
 
 }
+
+/*---------------------------------------------------------------------------------------*/                                                                            
+/*            66666666       222222222222222         1111111       333333333333333       */
+/*           6::::::6       2:::::::::::::::22      1::::::1      3:::::::::::::::33     */
+/*          6::::::6        2::::::222222:::::2    1:::::::1      3::::::33333::::::3    */
+/*         6::::::6         2222222     2:::::2    111:::::1      3333333     3:::::3    */
+/*        6::::::6                      2:::::2       1::::1                  3:::::3    */
+/*       6::::::6                       2:::::2       1::::1                  3:::::3    */
+/*      6::::::6                     2222::::2        1::::1          33333333:::::3     */
+/*     6::::::::66666           22222::::::22         1::::l          3:::::::::::3      */
+/*    6::::::::::::::66       22::::::::222           1::::l          33333333:::::3     */
+/*    6::::::66666:::::6     2:::::22222              1::::l                  3:::::3    */
+/*    6:::::6     6:::::6   2:::::2                   1::::l                  3:::::3    */
+/*    6:::::6     6:::::6   2:::::2                   1::::l                  3:::::3    */
+/*    6::::::66666::::::6   2:::::2       222222   111::::::111   3333333     3:::::3    */
+/*     66:::::::::::::66    2::::::2222222:::::2   1::::::::::1   3::::::33333::::::3    */
+/*       66:::::::::66      2::::::::::::::::::2   1::::::::::1   3:::::::::::::::33     */
+/*         666666666        22222222222222222222   111111111111    333333333333333       */
+/*                                                                                    ©  */
+/*---------------------------------------------------------------------------------------*/
 
